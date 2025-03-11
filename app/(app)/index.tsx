@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { router } from "expo-router";
 
 const Home = () => {
   return (
@@ -48,8 +49,9 @@ const Home = () => {
           }}
         />
         <Pressable
-          //   onPress={onPressLearnMore}
-
+          onPress={() => {
+            router.push("/chooseRoom");
+          }}
           //   color="#841584"
           style={{
             backgroundColor: "#e8a548",

@@ -11,6 +11,10 @@ export default function AppLayout() {
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="index" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="chooseRoom"
+        options={{ headerShown: true, headerTitle: "Choose Room" }}
+      />
     </Stack>
   );
 }
