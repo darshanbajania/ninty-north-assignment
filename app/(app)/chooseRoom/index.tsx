@@ -93,7 +93,13 @@ const ChooseRoomScreen = () => {
           renderItem={({ item }) => (
             <Pressable
               onPress={() => {
-                router.push("/chatRoomScreen");
+                router.push({
+                  pathname: "/chatRoomScreen",
+                  params: {
+                    roomId: item.id,
+                    roomName: item.name,
+                  },
+                });
               }}
               style={{
                 backgroundColor: "#fcf6ed",
