@@ -1,8 +1,11 @@
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { router } from "expo-router";
+import useStore from "@/libs/store";
 
 const ChooseRoomScreen = () => {
+  const username = useStore((state) => state.globalUsername);
+  console.log("username in choose room", username);
   return (
     <View style={styles.container}>
       <View style={{ alignItems: "flex-end", marginBottom: 8 }}>

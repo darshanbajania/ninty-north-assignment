@@ -11,9 +11,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { useMutation } from "@tanstack/react-query";
 import { axiosInstance } from "@/libs/axios";
+import useStore from "@/libs/store";
 
 const Home = () => {
   const [username, setUsername] = useState("");
+  const setGlobalUsername = useStore((state) => state.setUsername);
   const createUser = useMutation({
     mutationFn: (payload: any) => {
       console.log("mutation payload", payload);
@@ -23,6 +25,10 @@ const Home = () => {
         })
         .then((data) => {
           console.log("mutation response data", data.data);
+          if (data.status === 200) {
+            setGlobalUsername(username);
+            router.push("/chooseRoom");
+          }
           return data;
         });
     },
@@ -80,10 +86,7 @@ const Home = () => {
           }}
         />
         <Pressable
-          onPress={() => {
-            handleCreateUser();
-            // router.push("/chooseRoom");
-          }}
+          onPress={handleCreateUser}
           //   color="#841584"
           style={{
             backgroundColor: "#e8a548",
