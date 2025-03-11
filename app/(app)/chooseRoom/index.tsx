@@ -26,6 +26,9 @@ const ChooseRoomScreen = () => {
       </View>
       <ScrollView>
         <Pressable
+          onPress={() => {
+            router.push("/chatRoomScreen");
+          }}
           style={{
             backgroundColor: "#fcf6ed",
             paddingHorizontal: 16,

@@ -15,6 +15,7 @@ export default function AppLayout() {
         name="chooseRoom"
         options={{ headerShown: false, headerTitle: "Choose Room" }}
       />
+      <Stack.Screen name="chatRoomScreen" options={{ headerShown: false }} />
     </Stack>
   );
 }
