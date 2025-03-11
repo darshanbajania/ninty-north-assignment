@@ -1,21 +1,20 @@
 import {
   FlatList,
   Pressable,
-  ScrollView,
+  RefreshControl,
   StyleSheet,
   Text,
   View,
 } from "react-native";
 import React from "react";
-import { router } from "expo-router";
-import useStore from "@/libs/store";
-import { useQuery } from "@tanstack/react-query";
+import { router, useFocusEffect } from "expo-router";
+import { focusManager, useQuery } from "@tanstack/react-query";
 import { axiosInstance } from "@/libs/axios";
 
 const ChooseRoomScreen = () => {
-  const username = useStore((state) => state.globalUsername);
+  const [refreshing, setRefreshing] = React.useState(false);
   const { isLoading, isError, data, error, refetch } = useQuery({
-    queryKey: ["choose-room-screen", username],
+    queryKey: ["choose-room-screen"],
     queryFn: async () => {
       console.log("response data");
       const response = await axiosInstance.get(`chat/rooms`);
@@ -23,6 +22,20 @@ const ChooseRoomScreen = () => {
       return response?.data;
     },
   });
+  useFocusEffect(
+    React.useCallback(() => {
+      focusManager.setFocused(true);
+      return () => {
+        focusManager.setFocused(undefined);
+      };
+    }, [])
+  );
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    refetch().finally(() => {
+      setRefreshing(false);
+    });
+  }, []);
   if (isError) {
     return (
       <View
@@ -74,6 +87,9 @@ const ChooseRoomScreen = () => {
             paddingHorizontal: 16,
             paddingBottom: 50,
           }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
           renderItem={({ item }) => (
             <Pressable
               onPress={() => {
