@@ -1,14 +1,53 @@
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  FlatList,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import React from "react";
 import { router } from "expo-router";
 import useStore from "@/libs/store";
+import { useQuery } from "@tanstack/react-query";
+import { axiosInstance } from "@/libs/axios";
 
 const ChooseRoomScreen = () => {
   const username = useStore((state) => state.globalUsername);
-  console.log("username in choose room", username);
+  const { isLoading, isError, data, error, refetch } = useQuery({
+    queryKey: ["choose-room-screen", username],
+    queryFn: async () => {
+      console.log("response data");
+      const response = await axiosInstance.get(`chat/rooms`);
+      // console.log("response data", response.data);
+      return response?.data;
+    },
+  });
+  if (isError) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          paddingTop: 16,
+          backgroundColor: "white",
+        }}
+      >
+        <Text style={{ color: "red", fontSize: 16, textAlign: "center" }}>
+          Something Went Wrong!{" "}
+        </Text>
+        <Text style={{ textAlign: "center" }}>{error.message} </Text>
+      </View>
+    );
+  }
   return (
     <View style={styles.container}>
-      <View style={{ alignItems: "flex-end", marginBottom: 8 }}>
+      <View
+        style={{
+          alignItems: "flex-end",
+          marginBottom: 8,
+          paddingHorizontal: 16,
+        }}
+      >
         <Pressable
           onPress={() => {
             router.push("/chooseRoom/createRoom");
@@ -27,21 +66,48 @@ const ChooseRoomScreen = () => {
           </Text>
         </Pressable>
       </View>
-      <ScrollView>
-        <Pressable
-          onPress={() => {
-            router.push("/chatRoomScreen");
-          }}
-          style={{
-            backgroundColor: "#fcf6ed",
+      {!isLoading ? (
+        <FlatList
+          data={data ? data : []}
+          contentContainerStyle={{
+            gap: 8,
             paddingHorizontal: 16,
-            paddingVertical: 8,
-            borderRadius: 8,
+            paddingBottom: 50,
           }}
-        >
-          <Text style={{ fontSize: 16 }}>{"Room 1"}</Text>
-        </Pressable>
-      </ScrollView>
+          renderItem={({ item }) => (
+            <Pressable
+              onPress={() => {
+                router.push("/chatRoomScreen");
+              }}
+              style={{
+                backgroundColor: "#fcf6ed",
+                paddingHorizontal: 16,
+                paddingVertical: 8,
+                borderRadius: 8,
+              }}
+            >
+              <Text style={{ fontSize: 16 }}>{item?.name}</Text>
+            </Pressable>
+          )}
+          keyExtractor={(item) => item.id}
+          ListEmptyComponent={
+            <View style={{ paddingTop: 32 }}>
+              <Text
+                style={{ textAlign: "center", fontSize: 16, color: "gray" }}
+              >
+                No rooms available!
+              </Text>
+              <Text style={{ textAlign: "center", fontSize: 16, marginTop: 8 }}>
+                Please create a new room
+              </Text>
+            </View>
+          }
+        />
+      ) : (
+        <Text style={{ textAlign: "center", fontSize: 16 }}>
+          Fetching Rooms...
+        </Text>
+      )}
     </View>
   );
 };
@@ -51,7 +117,7 @@ export default ChooseRoomScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    paddingTop: 16,
     backgroundColor: "white",
   },
 });
