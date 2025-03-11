@@ -6,11 +6,42 @@ import {
   TextInput,
   View,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
+import { useMutation } from "@tanstack/react-query";
+import { axiosInstance } from "@/libs/axios";
 
 const Home = () => {
+  const [username, setUsername] = useState("");
+  const createUser = useMutation({
+    mutationFn: (payload: any) => {
+      console.log("mutation payload", payload);
+      return axiosInstance
+        .post("/chat/username/", {
+          username: username,
+        })
+        .then((data) => {
+          console.log("mutation response data", data.data);
+          return data;
+        });
+    },
+    onError: (err) => {
+      console.log("mutation error", err);
+    },
+  });
+
+  const onChangeText = (text: string) => {
+    setUsername(text);
+  };
+  const handleCreateUser = () => {
+    console.log("username create", username);
+    if (!username) {
+      return;
+    }
+    createUser.mutate({ username: username });
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ marginBottom: 100 }}>
@@ -37,8 +68,8 @@ const Home = () => {
           multiline
           numberOfLines={4}
           maxLength={40}
-          // onChangeText={(text) => onChangeText(text)}
-          // value={value}
+          onChangeText={(text) => onChangeText(text)}
+          value={username}
           style={{
             height: 40,
             borderColor: "gray",
@@ -50,7 +81,8 @@ const Home = () => {
         />
         <Pressable
           onPress={() => {
-            router.push("/chooseRoom");
+            handleCreateUser();
+            // router.push("/chooseRoom");
           }}
           //   color="#841584"
           style={{
