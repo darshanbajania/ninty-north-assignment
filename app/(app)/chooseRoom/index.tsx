@@ -14,13 +14,13 @@ const ChooseRoomScreen = () => {
           style={{
             backgroundColor: "#e8a548",
             padding: 10,
-            marginTop: 16,
+            marginBottom: 16,
             alignItems: "center",
             borderRadius: 4,
           }}
         >
           <Text style={{ color: "white", fontWeight: 500, fontSize: 16 }}>
-            {"Create Users"}
+            {"+ Create New Room"}
           </Text>
         </Pressable>
       </View>

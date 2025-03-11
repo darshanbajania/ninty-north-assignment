@@ -14,7 +14,10 @@ export default function Layout() {
         name="index"
         options={{ headerShown: true, headerTitle: "Choose Room" }}
       />
-      <Stack.Screen name="createRoom" options={{ headerShown: true }} />
+      <Stack.Screen
+        name="createRoom"
+        options={{ headerShown: true, headerTitle: "Create New Room" }}
+      />
     </Stack>
   );
 }
