@@ -1,14 +1,15 @@
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import React from "react";
+import { router } from "expo-router";
 
 const ChooseRoomScreen = () => {
   return (
     <View style={styles.container}>
       <View style={{ alignItems: "flex-end", marginBottom: 8 }}>
         <Pressable
-          //   onPress={() => {
-          //     router.push("/chooseRoom");
-          //   }}
+          onPress={() => {
+            router.push("/chooseRoom/createRoom");
+          }}
           //   color="#841584"
           style={{
             backgroundColor: "#e8a548",
@@ -19,7 +20,7 @@ const ChooseRoomScreen = () => {
           }}
         >
           <Text style={{ color: "white", fontWeight: 500, fontSize: 16 }}>
-            {"Create User"}
+            {"Create Users"}
           </Text>
         </Pressable>
       </View>
