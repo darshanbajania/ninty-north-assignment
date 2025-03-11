@@ -1,7 +1,43 @@
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
-import React from "react";
+import React, { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { axiosInstance } from "@/libs/axios";
+import { router } from "expo-router";
 
 const CreateRoomScreen = () => {
+  const [roomName, setRoomName] = useState("");
+  const createUser = useMutation({
+    mutationFn: (payload: any) => {
+      return axiosInstance
+        .post("/chat/rooms/", {
+          name: payload.roomName,
+        })
+        .then((data) => {
+          console.log("mutation response data", data.data);
+          if (data.status === 200) {
+            // setGlobalUsername(username);
+            // router.push("/chooseRoom");
+            router.back();
+          }
+          return data;
+        });
+    },
+
+    onError: (err) => {
+      console.log("mutation error", err?.response?.data);
+    },
+  });
+  const onChangeText = (text: string) => {
+    setRoomName(text);
+  };
+  const handleCreateNewRoom = () => {
+    console.log("username create", roomName);
+    if (!roomName) {
+      return;
+    }
+    createUser.mutate({ roomName: roomName });
+  };
+
   return (
     <View style={styles.container}>
       <View>
@@ -9,8 +45,8 @@ const CreateRoomScreen = () => {
           Room Name<Text style={{ color: "red" }}>*</Text>
         </Text>
         <TextInput
-          // onChangeText={(text) => onChangeText(text)}
-          // value={value}
+          onChangeText={(text) => onChangeText(text)}
+          value={roomName}
           placeholder="Enter the room name"
           style={{
             paddingLeft: 8,
@@ -25,9 +61,7 @@ const CreateRoomScreen = () => {
       </View>
       <View style={{ alignItems: "flex-end", marginBottom: 8 }}>
         <Pressable
-          onPress={() => {
-            // router.push("/chooseRoom/createRoom");
-          }}
+          onPress={handleCreateNewRoom}
           //   color="#841584"
           style={{
             backgroundColor: "#e8a548",
